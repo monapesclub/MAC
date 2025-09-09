@@ -4,8 +4,8 @@ const { Network, Alchemy } = require("alchemy-sdk");
 
 // Alchemy Configuration
 const settings = {
-    apiKey: "obqcfQFQQMex23ALSZQEf",
-    network: Network.MONAD_TESTNET, // ❌ ဒီနေရာမှာ Monad မရှိရင် အမှားထွက်မယ်
+     apiKey: process.env.ALCHEMY_API_KEY,
+    network: Network.MONAD_TESTNET,
 };
 
 // Create the Alchemy object
@@ -65,5 +65,6 @@ router.get('/nfts', async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch NFTs from backend.' });
     }
 });
+
 
 module.exports = router;
