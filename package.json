@@ -1,0 +1,28 @@
+{
+  "name": "monad-nft-verify",
+  "version": "1.0.0",
+  "description": "Monad Testnet NFT Verification with Discord Integration",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js"
+  },
+  "dependencies": {
+    "alchemy-sdk": "^3.6.3",
+    "axios": "^1.4.0",
+    "connect-mongo": "^5.1.0",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "discord.js": "^14.11.0",
+    "dotenv": "^16.6.1",
+    "ethers": "^6.15.0",
+    "express": "^4.18.2",
+    "express-session": "^1.18.2",
+    "lowdb": "^6.0.1",
+    "mongoose": "^8.18.0",
+    "node-cron": "^4.2.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}

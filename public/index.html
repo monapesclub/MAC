@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Monapes Club NFT Verification Portal</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+   <link rel="icon" type="image/png" href="images/mac.png">
+  <style>
+    .top-left-brand {
+  position: absolute;
+  top: 20px;
+  left: 20px;   
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: bold;
+  font-size: 20px;
+  color: white;
+}
+
+.top-left-brand img {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+}
+  </style>
+</head>
+<body>
+
+  <div class="top-left-brand">
+    <img src="images/logo.png" alt="MAC Verify Logo">
+    <span>MAC Verify</span>
+  </div>
+
+  <main class="container">
+    <section class="hero">
+      <h1>Monape Club NFT Verification Portal</h1>
+      <p>Verify your NFT ownership and get exclusive Discord roles for your Monad testnet NFTs</p>
+      <button class="btn btn-primary" id="getStartedBtn">Get Started</button>
+    </section>
+
+    <section class="features">
+      <div class="feature">
+        <div class="feature-icon">
+          <i class="fas fa-shield-alt"></i>
+        </div>
+        <h3>Secure Verification</h3>
+        <p>Verify NFT ownership securely with wallet connection</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">
+          <i class="fab fa-discord"></i>
+        </div>
+        <h3>Discord Integration</h3>
+        <p>Automatically assign Discord roles based on NFT ownership</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">
+          <i class="fas fa-cogs"></i>
+        </div>
+        <h3>Project Management</h3>
+        <p>Easy configuration for project owners and moderators</p>
+      </div>
+    </section>
+
+    <div class="card">
+      <h2 class="card-title">How It Works</h2>
+      <div class="how-it-works">
+        <div class="step">
+          <div class="step-number">1</div>
+          <h3>Connect Accounts</h3>
+          <p>Connect your Discord and Monad wallet</p>
+        </div>
+        <div class="step">
+          <div class="step-number">2</div>
+          <h3>Verify NFTs</h3>
+          <p>Our system checks your wallet for eligible NFTs</p>
+        </div>
+        <div class="step">
+          <div class="step-number">3</div>
+          <h3>Get Roles</h3>
+          <p>Receive exclusive Discord roles based on your NFTs</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>MAC Verify &copy; 2025. All rights reserved.</p>
+    <p>This is a testnet application. Do not use with mainnet assets.</p>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const getStartedBtn = document.getElementById('getStartedBtn');
+
+      if (getStartedBtn) {
+        getStartedBtn.addEventListener('click', () => {
+          fetch('/api/auth/user')
+            .then(response => {
+              if (response.ok) {
+                window.location.href = '/dashboard.html';
+              } else {
+                window.location.href = '/api/auth/discord';
+              }
+            })
+            .catch(error => {
+              console.error('Auth check failed:', error);
+              window.location.href = '/api/auth/discord';
+            });
+        });
+      }
+    });
+  </script>
+</body>
+</html>
+
+
+
+
+

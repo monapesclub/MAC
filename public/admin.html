@@ -1,0 +1,1096 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - MAC Verify</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/png" href="images/mac.png">
+    <style>
+        :root {
+            --primary: #6e44ff;
+            --primary-dark: #5a36d4;
+            --secondary: #2a2a4a;
+            --background: #1e1a40;
+            --text: #f0f0ff;
+            --success: #4CAF50;
+            --error: #f44336;
+            --warning: #ff9800;
+            --info: #2196F3;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--background);
+            color: var(--text);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 1rem;
+        }
+
+        /* Header Styles */
+        .admin-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding: 1rem;
+        }
+
+        .back-button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: var(--primary-dark);
+            transform: translateX(-2px);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo-image {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: white;
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--text);
+        }
+
+        .admin-title {
+            margin-left: auto;
+            font-size: 1.2rem;
+            color: var(--text);
+            opacity: 0.8;
+            font-weight: 600;
+        }
+
+        /* Main Content */
+        .admin-dashboard {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 0.6rem 1.2rem;
+            cursor: pointer;
+            border-radius: 8px 8px 0 0;
+            background: rgba(110, 68, 255, 0.1);
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .tab:hover {
+            background: rgba(110, 68, 255, 0.2);
+        }
+
+        .tab.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Forms */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text);
+            font-size: 0.95rem;
+        }
+
+        input[type="text"], 
+        input[type="number"], 
+        select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--primary);
+            border-radius: 8px;
+            background: var(--secondary);
+            color: var(--text);
+            font-size: 0.95rem;
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary-dark);
+            box-shadow: 0 0 0 3px rgba(110, 68, 255, 0.1);
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            font-size: 0.95rem;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(110, 68, 255, 0.3);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--error);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #d32f2f;
+        }
+
+        /* Rule Groups */
+        .rule-group {
+            border: 2px solid rgba(110, 68, 255, 0.3);
+            padding: 1.25rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            position: relative;
+            background: rgba(42, 38, 80, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .rule-group:hover {
+            border-color: var(--primary);
+            box-shadow: 0 4px 15px rgba(110, 68, 255, 0.2);
+        }
+
+        .remove-btn {
+            position: absolute;
+            top: 0.75rem;
+            right: 0.75rem;
+            background: transparent;
+            border: none;
+            color: var(--error);
+            font-size: 1.1rem;
+            cursor: pointer;
+            padding: 0.25rem;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .remove-btn:hover {
+            background: rgba(244, 67, 54, 0.1);
+            transform: scale(1.1);
+        }
+
+        /* Project List */
+        .project-item {
+            background: var(--secondary);
+            border: 2px solid var(--primary);
+            padding: 1.1rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .project-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(110, 68, 255, 0.2);
+        }
+
+        .project-info {
+            flex: 1;
+        }
+
+        .project-actions {
+            display: flex;
+            gap: 0.6rem;
+        }
+
+        /* Team Management */
+        .member-list {
+            background: rgba(42, 38, 80, 0.4);
+            padding: 1.1rem;
+            border-radius: 12px;
+            margin-top: 1rem;
+        }
+
+        .member-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.6rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .member-item:last-child {
+            border-bottom: none;
+        }
+
+        /* Message System */
+        .message-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            max-width: 350px;
+        }
+
+        .message {
+            padding: 0.9rem 1.25rem;
+            margin-bottom: 0.75rem;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            animation: slideIn 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            font-size: 0.9rem;
+        }
+
+        .message-success {
+            background: var(--success);
+            border-left: 4px solid #2e7d32;
+        }
+
+        .message-error {
+            background: var(--error);
+            border-left: 4px solid #c62828;
+        }
+
+        .message-warning {
+            background: var(--warning);
+            border-left: 4px solid #ef6c00;
+        }
+
+        .message-info {
+            background: var(--info);
+            border-left: 4px solid #1565c0;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            body {
+                padding: 0.5rem;
+            }
+
+            .admin-header {
+                margin-bottom: 1.5rem;
+                padding: 0.75rem;
+            }
+
+            .logo-text {
+                font-size: 1.3rem;
+            }
+
+            .admin-title {
+                font-size: 1rem;
+            }
+
+            .tabs {
+                flex-direction: column;
+            }
+
+            .tab {
+                border-radius: 8px;
+                margin-bottom: 0.5rem;
+                font-size: 0.85rem;
+                padding: 0.5rem 1rem;
+            }
+
+            .project-item {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .project-actions {
+                justify-content: center;
+            }
+
+            .rule-group {
+                padding: 1rem;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+                font-size: 0.9rem;
+                padding: 0.7rem 1.25rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .admin-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 0.75rem;
+            }
+
+            .logo {
+                justify-content: center;
+            }
+
+            .admin-title {
+                margin-left: 0;
+            }
+
+            .tabs {
+                gap: 0.25rem;
+            }
+
+            .tab {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.8rem;
+            }
+
+            input[type="text"], 
+            input[type="number"], 
+            select {
+                padding: 0.6rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Loading States */
+        .loading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        .spinner {
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid var(--primary);
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Card Styles */
+        .card {
+            background: var(--secondary);
+            border-radius: 12px;
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(110, 68, 255, 0.2);
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text);
+        }
+
+        /* Step Indicators */
+        .step-indicator {
+            display: flex;
+            gap: 0.8rem;
+            margin-bottom: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .step-number {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .step.active .step-number {
+            background: var(--primary-dark);
+            box-shadow: 0 0 0 3px rgba(110, 68, 255, 0.2);
+        }
+
+        .step-text {
+            font-size: 0.8rem;
+            color: var(--text);
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <!-- Message Container -->
+    <div class="message-container" id="messageContainer"></div>
+
+    <!-- Header -->
+    <header class="admin-header">
+        <button class="back-button" onclick="goToDashboard()">
+            <i class="fas fa-arrow-left"></i> Back
+        </button>
+        
+        <div class="logo">
+           <img src="images/logo.png" alt="MAC Verify Logo" class="logo-image"> 
+            <h1 class="logo-text">MAC Verify</h1>
+        </div>
+        
+        <div class="admin-title">Admin Panel</div>
+    </header>
+
+    <main class="admin-dashboard">
+        <!-- Tabs -->
+        <div class="tabs">
+            <div class="tab active" data-tab="list">My Projects</div>
+            <div class="tab" data-tab="project">New Project</div>
+            <div class="tab" data-tab="roles">Role Config</div>
+            <div class="tab" data-tab="team">Team Management</div>
+        </div>
+
+        <!-- Project List Tab -->
+        <div class="tab-content active" id="list-tab">
+            <div class="card">
+                <h2 class="card-title">My Projects</h2>
+                <div id="projectListContainer">
+                    <p id="loadingProjects">🔄 Loading projects...</p>
+                </div>
+                <button class="btn btn-primary" onclick="showNewProjectTab()" style="margin-top: 1rem;">
+                    <i class="fas fa-plus"></i> Add New Project
+                </button>
+            </div>
+        </div>
+
+        <!-- New Project Tab -->
+        <div class="tab-content" id="project-tab">
+            <div class="card">
+                <h2 class="card-title">Setup New NFT Project</h2>
+                
+                <div class="step-indicator">
+                    <div class="step active">
+                        <div class="step-number">1</div>
+                        <div class="step-text">Basic Info</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <div class="step-text">Roles</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <div class="step-text">Team</div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="projectName">Project Name</label>
+                    <input type="text" id="projectName" class="form-control" placeholder="Enter your project name">
+                </div>
+                
+                <div class="form-group">
+                    <label for="inviteBot">Invite Bot to Server</label>
+                    <button class="btn btn-primary" id="inviteBotBtn">
+                        <i class="fas fa-robot"></i> Invite Verification Bot
+                    </button>
+                    <p style="margin-top: 0.5rem; font-size: 0.85rem; color: #aaa; opacity: 0.8;">
+                        You must invite the bot first, then enter the Server ID below.
+                    </p>
+                </div>
+
+                <div class="form-group">
+                    <label for="guildId">Discord Server ID</label>
+                    <input type="text" id="guildId" class="form-control" placeholder="Paste your Discord Server ID here">
+                </div>
+
+                <div class="form-group">
+                    <label for="network">Blockchain Network</label>
+                    <select id="network" class="form-control">
+                        <option value="monad-testnet">Monad Testnet</option>
+                        <option value="monad-mainnet">Monad Mainnet</option>
+                    </select>
+                </div>
+                
+                <button class="btn btn-primary" onclick="switchTab('roles')">
+                    Next: Configure Roles <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Roles Tab -->
+        <div class="tab-content" id="roles-tab">
+            <div class="card">
+                <h2 class="card-title">NFT Role Rules</h2>
+                <p style="margin-bottom: 1.5rem; opacity: 0.8; font-size: 0.95rem;">
+                    Set which Discord roles should be assigned based on NFT ownership.
+                </p>
+                
+                <div id="rulesContainer">
+                    <div class="rule-group">
+                        <button type="button" class="remove-btn hidden"><i class="fas fa-times"></i></button>
+                        <div class="form-group">
+                            <label>NFT Contract Address</label>
+                            <input type="text" class="form-control contractAddress" placeholder="0x...">
+                        </div>
+                        <div class="form-group">
+                            <label>Token Type</label>
+                            <select class="form-control tokenType">
+                                <option value="ERC721">ERC721</option>
+                                <option value="ERC1155">ERC1155</option>
+                            </select>
+                        </div>
+                        <div class="form-group tokenId-group" style="display: none;">
+                            <label>Token ID (ERC1155 only)</label>
+                            <input type="text" class="form-control tokenId" placeholder="e.g. 1, 42...">
+                        </div>
+                        <div class="form-group">
+                            <label>Select Discord Role</label>
+                            <select class="form-control roleSelect">
+                                <option value="">Enter Server ID in Setup Tab</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Minimum Quantity</label>
+                            <input type="number" class="form-control quantity" value="1" min="1">
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1.5rem;">
+                    <button class="btn btn-outline" id="addRuleBtn">
+                        <i class="fas fa-plus"></i> Add Another Rule
+                    </button>
+                    <button class="btn btn-primary" onclick="switchTab('team')">
+                        Next: Team Management <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Team Tab -->
+        <div class="tab-content" id="team-tab">
+            <div class="card">
+                <h2 class="card-title">Team Management</h2>
+                <p style="margin-bottom: 1.5rem; opacity: 0.8; font-size: 0.95rem;">
+                    Add Discord User IDs of team members who can manage this configuration.
+                </p>
+
+                <div class="form-group">
+                    <label for="addMemberId">Discord User ID to Add</label>
+                    <input type="text" id="addMemberId" class="form-control" placeholder="123456789012345678">
+                </div>
+                
+                <button class="btn btn-primary" id="addMemberBtn">
+                    <i class="fas fa-user-plus"></i> Add Team Member
+                </button>
+
+                <h3 style="margin: 2rem 0 1rem 0; color: var(--text); font-size: 1.1rem;">Current Managers</h3>
+                
+                <div id="teamMembersContainer" class="member-list">
+                    <div class="member-item">
+                        <span>Your User (Owner)</span>
+                        <i class="fas fa-crown" style="color: gold;"></i>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary" id="finalSaveConfigBtn" style="margin-top: 2rem; width: 100%;">
+                    <i class="fas fa-save"></i> Save Project Configuration
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Store BOT_CLIENT_ID here after fetching it
+        let BOT_CLIENT_ID = null;
+        let BOT_INVITE_URL = '';
+        let teamMembers = [];
+
+        // Back to dashboard function
+        function goToDashboard() {
+            window.location.href = '/dashboard.html';
+        }
+
+        // Message system
+        function showMessage(message, type = 'info') {
+            const messageContainer = document.getElementById('messageContainer');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message message-${type}`;
+            
+            const icons = {
+                success: 'fas fa-check-circle',
+                error: 'fas fa-exclamation-circle',
+                warning: 'fas fa-exclamation-triangle',
+                info: 'fas fa-info-circle'
+            };
+
+            messageDiv.innerHTML = `
+                <i class="${icons[type]}"></i>
+                <span>${message}</span>
+            `;
+
+            messageContainer.appendChild(messageDiv);
+
+            // Remove message after 5 seconds
+            setTimeout(() => {
+                messageDiv.style.animation = 'slideIn 0.3s ease reverse';
+                setTimeout(() => messageDiv.remove(), 300);
+            }, 5000);
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await fetchBotClientId();
+            await checkAuth();
+
+            // Setup listeners
+            document.getElementById('guildId').addEventListener('change', (e) => fetchAndDisplayRoles(e.target.value));
+            document.getElementById('addRuleBtn').addEventListener('click', addRuleGroup);
+            document.getElementById('inviteBotBtn').addEventListener('click', () => {
+                if (BOT_INVITE_URL) {
+                    window.open(BOT_INVITE_URL, '_blank');
+                } else {
+                    showMessage('Bot invite URL is not available. Please try again later.', 'error');
+                }
+            });
+            document.getElementById('addMemberBtn').addEventListener('click', addTeamMember);
+            document.getElementById('finalSaveConfigBtn').addEventListener('click', saveConfig);
+
+            // Tab functionality
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', () => switchTab(tab.getAttribute('data-tab')));
+            });
+
+            loadSavedProjects();
+        });
+
+        async function fetchBotClientId() {
+            try {
+                const response = await fetch('/api/config/bot-client-id');
+                if (response.ok) {
+                    const data = await response.json();
+                    BOT_CLIENT_ID = data.clientId;
+                    if (BOT_CLIENT_ID) {
+                        BOT_INVITE_URL = `https://discord.com/api/oauth2/authorize?client_id=${BOT_CLIENT_ID}&permissions=268437504&scope=bot%20applications.commands`;
+                    }
+                }
+            } catch (error) {
+                console.error('Error fetching bot client ID:', error);
+            }
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+            document.querySelector(`.tab[data-tab="${tabId}"]`).classList.add('active');
+            document.getElementById(`${tabId}-tab`).classList.add('active');
+            
+            if (tabId === 'roles') {
+                const guildId = document.getElementById('guildId').value;
+                if (guildId) {
+                    fetchAndDisplayRoles(guildId);
+                }
+            }
+        }
+
+        async function checkAuth() {
+            try {
+                const response = await fetch('/api/auth/user');
+                if (!response.ok) {
+                    window.location.href = '/';
+                }
+            } catch (error) {
+                console.error('Auth check failed:', error);
+            }
+        }
+        
+        function showNewProjectTab() {
+              // Reset form fields when starting a new project
+            document.getElementById('projectName').value = '';
+            document.getElementById('guildId').value = '';
+            document.getElementById('rulesContainer').innerHTML = '';
+            addRuleGroup(); // Add initial rule group
+
+            teamMembers = []; // Reset team members (will be populated from server later if editing)
+
+            switchTab('project');
+        }
+
+        // --- Team Management Functions ---
+        function addTeamMember() {
+            const memberId = document.getElementById('addMemberId').value.trim();
+            if (!memberId) return alert('Please enter a Discord User ID.');
+            if (teamMembers.includes(memberId)) return alert('Member already added.');
+
+            teamMembers.push(memberId);
+            document.getElementById('addMemberId').value = '';
+            displayTeamMembers();
+        }
+
+        function displayTeamMembers() {
+            const container = document.getElementById('teamMembersContainer');
+            container.innerHTML = '';
+            
+            // Add current logged-in user (placeholder)
+            container.innerHTML += `<div class="member-item"><span>Your User (Owner)</span><i class="fas fa-user-shield" style="color: #6e44ff;"></i></div>`;
+
+            teamMembers.forEach(id => {
+                container.innerHTML += `
+                    <div class="member-item" data-member-id="${id}">
+                        <span>User ID: ${id}</span>
+                        <button class="remove-btn" type="button" onclick="removeTeamMember('${id}')"><i class="fas fa-times-circle"></i></button>
+                    </div>
+                `;
+            });
+        }
+
+        function removeTeamMember(idToRemove) {
+            teamMembers = teamMembers.filter(id => id !== idToRemove);
+            displayTeamMembers();
+        }
+
+
+        // --- Role & Rule Functions ---
+        async function fetchAndDisplayRoles(guildId) {
+            const roleSelects = document.querySelectorAll('.roleSelect');
+            roleSelects.forEach(select => select.innerHTML = '<option value="">Loading roles...</option>');
+            
+            if (!guildId) {
+                roleSelects.forEach(select => select.innerHTML = '<option value="">Enter Server ID in Setup Tab</option>');
+                return;
+            }
+
+            try {
+                // Call backend to fetch roles using the bot
+                const response = await fetch(`/api/admin/roles?guildId=${guildId}`);
+                if (response.ok) {
+                    const roles = await response.json();
+                    roleSelects.forEach(selectElement => {
+                        selectElement.innerHTML = '<option value="">-- Select Role --</option>';
+                        roles.forEach(role => {
+                            const option = document.createElement('option');
+                            option.value = role.id;
+                            option.textContent = role.name;
+                            selectElement.appendChild(option);
+                        });
+                    });
+                } else {
+                    roleSelects.forEach(select => select.innerHTML = '<option value="">Failed to load roles. Check Guild ID.</option>');
+                    console.error('Failed to fetch roles:', await response.json());
+                }
+            } catch (error) {
+                console.error('Error fetching roles:', error);
+                roleSelects.forEach(select => select.innerHTML = '<option value="">Error fetching roles</option>');
+            }
+        }
+
+function addRuleGroup(existingRule = {}) {
+    const rulesContainer = document.getElementById('rulesContainer');
+    const newRuleGroup = document.createElement('div');
+    newRuleGroup.className = 'rule-group';
+    
+    const isExisting = !!existingRule.contractAddress;
+
+    newRuleGroup.innerHTML = `
+        <button type="button" class="remove-btn ${isExisting ? '' : 'hidden'}"><i class="fas fa-times-circle"></i></button>
+        <div class="form-group">
+            <label>NFT Contract Address</label>
+            <input type="text" class="form-control contractAddress" placeholder="0x..." value="${existingRule.contractAddress || ''}">
+        </div>
+        <div class="form-group">
+            <label>Token Type</label>
+            <select class="form-control tokenType">
+                <option value="ERC721" ${existingRule.tokenType === "ERC721" ? "selected" : ""}>ERC721</option>
+                <option value="ERC1155" ${existingRule.tokenType === "ERC1155" ? "selected" : ""}>ERC1155</option>
+            </select>
+        </div>
+        <div class="form-group tokenId-group" style="display:${existingRule.tokenType === "ERC1155" ? "block" : "none"}">
+            <label>Token ID (ERC1155 only)</label>
+            <input type="text" class="form-control tokenId" placeholder="e.g. 1, 42..." value="${existingRule.tokenId || ''}">
+        </div>
+        <div class="form-group">
+            <label>Select Discord Role</label>
+            <select class="form-control roleSelect" data-selected-role="${existingRule.roleId || ''}">
+                <option value="">${isExisting ? 'Loading roles...' : 'Enter Server ID in Setup Tab'}</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Minimum Quantity</label>
+            <input type="number" class="form-control quantity" value="${existingRule.quantity || 1}" min="1">
+        </div>
+    `;
+    rulesContainer.appendChild(newRuleGroup);
+
+    // Show/hide tokenId when switching tokenType
+    const tokenTypeSelect = newRuleGroup.querySelector('.tokenType');
+    const tokenIdGroup = newRuleGroup.querySelector('.tokenId-group');
+    tokenTypeSelect.addEventListener('change', () => {
+        if (tokenTypeSelect.value === "ERC1155") {
+            tokenIdGroup.style.display = "block";
+        } else {
+            tokenIdGroup.style.display = "none";
+            tokenIdGroup.querySelector('.tokenId').value = "";
+        }
+    });
+
+    newRuleGroup.querySelector('.remove-btn').addEventListener('click', () => newRuleGroup.remove());
+    
+    // If editing an existing project, fetch roles and select the saved role
+    if (isExisting) {
+        const guildId = document.getElementById('guildId').value;
+        fetchAndDisplayRoles(guildId).then(() => {
+           const selectElement = newRuleGroup.querySelector('.roleSelect');
+           const savedRoleId = selectElement.getAttribute('data-selected-role');
+           if(savedRoleId) {
+               selectElement.value = savedRoleId;
+           }
+        });
+    } else {
+        const guildId = document.getElementById('guildId').value;
+        fetchAndDisplayRoles(guildId);
+    }
+}
+
+
+        // --- Save & Load Functions ---
+
+        async function saveConfig() {
+            const guildId = document.getElementById('guildId').value.trim();
+            const projectName = document.getElementById('projectName').value.trim();
+            const network = document.getElementById('network').value;
+            const rules = [];
+
+            if (!guildId || !projectName) {
+                alert('Please enter Discord Server ID and Project Name in the Setup tab.');
+                switchTab('project');
+                return;
+            }
+
+         document.querySelectorAll('.rule-group').forEach(group => {
+    const contractAddress = group.querySelector('.contractAddress').value.trim();
+    const roleId = group.querySelector('.roleSelect').value.trim();
+    const quantity = parseInt(group.querySelector('.quantity').value);
+    const tokenType = group.querySelector('.tokenType').value;
+    const tokenId = group.querySelector('.tokenId')?.value.trim();
+
+    if (contractAddress && roleId && quantity >= 1 && tokenType) {
+        const rule = { contractAddress, roleId, quantity, tokenType };
+        if (tokenType === "ERC1155" && tokenId) {
+            rule.tokenId = tokenId;
+        }
+        rules.push(rule);
+    }
+});
+
+
+            if (rules.length === 0) {
+                alert('Please add at least one valid rule in the Role Configuration tab.');
+                switchTab('roles');
+                return;
+            }
+
+            // In a real application, you would also include the current admin's ID
+            // and the `teamMembers` array in the save payload.
+
+            const payload = { 
+                guildId, 
+                projectName, 
+                network, 
+                rules, 
+                teamMembers 
+            };
+
+            try {
+                const response = await fetch('/api/admin/save-project', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload),
+                });
+
+                if (response.ok) {
+                    alert('Project configuration saved successfully!');
+                    loadSavedProjects();
+                    switchTab('list');
+                } else {
+                    alert('Failed to save configuration. Please check the Server ID and API connection.');
+                    console.error('Save config failed:', await response.text());
+                }
+            } catch (error) {
+                console.error('Error saving config:', error);
+                alert('An error occurred while saving the configuration.');
+            }
+        }
+
+        async function loadSavedProjects() {
+            const container = document.getElementById('projectListContainer');
+            container.innerHTML = '<p id="loadingProjects">Loading projects...</p>';
+
+            try {
+                const response = await fetch('/api/admin/projects'); // Backend must provide this API
+                if (response.ok) {
+                    const projects = await response.json();
+                    container.innerHTML = '';
+                    
+                    if (projects.length === 0) {
+                        container.innerHTML = '<p>No projects configured yet. Start a new one!</p>';
+                        return;
+                    }
+
+                    projects.forEach(project => {
+                        const projectItem = document.createElement('div');
+                        projectItem.className = 'project-item';
+                        projectItem.innerHTML = `
+                            <span><strong>${project.projectName}</strong> (${project.network}) - Rules: ${project.rules.length}</span>
+                            <div>
+                                <button class="btn-outline" onclick="editProject('${project.guildId}')">Edit</button>
+                                <button class="btn-primary" style="background-color: #ff4d4d;" onclick="deleteProject('${project.guildId}')">Delete</button>
+                            </div>
+                        `;
+                        container.appendChild(projectItem);
+                    });
+                } else {
+                    container.innerHTML = '<p>Failed to load projects.</p>';
+                    console.error('Failed to fetch projects:', await response.text());
+                }
+            } catch (error) {
+                container.innerHTML = '<p>Error connecting to backend API.</p>';
+                console.error('Error loading projects:', error);
+            }
+        }
+        
+        async function editProject(guildId) {
+            // 1. Fetch data for this guildId
+            try {
+                const response = await fetch(`/api/admin/project-details?guildId=${guildId}`);
+                if (!response.ok) throw new Error('Failed to fetch project details');
+                const project = await response.json();
+
+                // 2. Populate Setup tab
+                document.getElementById('projectName').value = project.projectName;
+                document.getElementById('guildId').value = project.guildId;
+                document.getElementById('network').value = project.network;
+
+                // 3. Populate Role Rules tab
+                document.getElementById('rulesContainer').innerHTML = ''; // Clear existing rules
+                project.rules.forEach(rule => addRuleGroup(rule));
+                
+                // 4. Populate Team Management tab
+                teamMembers = project.teamMembers || []; // Load saved team members
+                displayTeamMembers();
+
+                // 5. Switch to the Setup tab (or the first tab)
+                switchTab('project');
+                alert(`Editing project: ${project.projectName}`);
+
+            } catch (error) {
+                console.error('Error editing project:', error);
+                alert('Could not load project details for editing.');
+            }
+        }
+        
+        function deleteProject(guildId) {
+            if (confirm('Are you sure you want to delete this project configuration?')) {
+                // In a real application, call the backend delete API here
+                alert(`Deleting project with ID: ${guildId}. (Requires backend API call)`);
+                loadSavedProjects(); // Reload list after theoretical delete
+            }
+        }
+    </script>
+    <script src="js/script.js"></script>
+</body>
+</html>
+
+

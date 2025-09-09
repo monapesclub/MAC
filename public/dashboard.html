@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Monad NFT Verification</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/png" href="images/mac.png">
+</head>
+<body class="bg-[#1e1a40] text-[#f0f0ff] font-sans min-h-screen">
+    <!-- Message Box -->
+    <div id="message-box" class="fixed bottom-5 right-5 px-6 py-4 rounded-lg text-white z-50 opacity-0 transition-opacity duration-500"></div>
+
+   <header class="sticky top-0 z-40 bg-[#1e1a40] bg-opacity-90 backdrop-blur-sm shadow-lg border-b border-[#3d346b] py-4 px-6 md:px-12 flex justify-between items-center">
+    <div class="flex items-center space-x-2">
+       <img src="images/logo.png" alt="MAC Verify Logo" class="w-10 h-10 object-contain">
+        <span class="text-2xl font-bold">MAC Verify</span>
+    </div>
+        <nav class="hidden md:block">
+            <a href="/" class="text-[#b8b8d2] hover:text-[#f0f0ff] transition-colors">Home</a>
+        </nav>
+        <div class="flex items-center space-x-4" id="headerActions">
+            <button class="bg-[#6e44ff] text-white py-2 px-4 rounded-lg font-bold hover:bg-[#5a36d4] transition-colors" id="loginBtn">
+                <i class="fab fa-discord"></i> Login with Discord
+            </button>
+            <button class="bg-[#6e44ff] text-white py-2 px-4 rounded-lg font-bold hover:bg-[#5a36d4] transition-colors hidden md:block" id="connectWalletHeaderBtn">
+                <i class="fas fa-wallet"></i> Connect Wallet
+            </button>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8 md:py-12 max-w-7xl">
+        <div class="bg-gradient-to-br from-[#6e44ff] to-[#4a3aff] rounded-xl p-8 text-center mb-8 shadow-xl">
+            <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-2">Welcome to MAC Verify</h1>
+            <p class="text-lg sm:text-xl font-light opacity-80">Connect your wallet to verify NFT ownership and get Discord roles</p>
+        </div>
+
+        <div class="bg-[#2a2a4a] rounded-xl p-6 md:p-8 flex flex-col md:flex-row items-center md:items-start space-y-6 md:space-y-0 md:space-x-8 mb-8 shadow-lg">
+            <img id="userAvatar" src="https://cdn.discordapp.com/embed/avatars/0.png" alt="User Avatar" class="w-24 h-24 rounded-full border-4 border-[#6e44ff] flex-shrink-0">
+            <div class="text-center md:text-left">
+                <h2 id="userName" class="text-2xl font-bold mb-1">Loading...</h2>
+                <p id="userStatus" class="text-[#b8b8d2] text-sm md:text-base mb-2">Status: Checking authentication</p>
+                <div id="adminStatus" class="inline-block px-3 py-1 rounded-full text-sm font-semibold"></div>
+                <div id="walletStatusSection" class="mt-4"></div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            <div class="bg-[#2a2a4a] rounded-xl p-8 text-center transition-transform hover:scale-105 shadow-md">
+                <div class="text-4xl text-[#6e44ff] mb-4"><i class="fas fa-wallet"></i></div>
+                <h3 class="text-xl font-semibold mb-2">Connect Wallet</h3>
+                <p class="text-sm text-[#b8b8d2] mb-4">Connect your Monad wallet to verify NFT ownership</p>
+                <button id="connectWalletDashboardBtn" class="bg-[#6e44ff] text-white py-2 px-6 rounded-lg font-bold hover:bg-[#5a36d4] transition-colors">Connect Wallet</button>
+            </div>
+            <div class="bg-[#2a2a4a] rounded-xl p-8 text-center transition-transform hover:scale-105 shadow-md">
+                <div class="text-4xl text-[#6e44ff] mb-4"><i class="fas fa-id-card"></i></div>
+                <h3 class="text-xl font-semibold mb-2">Get Discord Roles</h3>
+                <p class="text-sm text-[#b8b8d2] mb-4">Receive exclusive roles based on your NFT collection</p>
+                <button class="bg-[#6e44ff] text-white py-2 px-6 rounded-lg font-bold hover:bg-[#5a36d4] transition-colors" id="checkRolesBtn">Check My Roles</button>
+            </div>
+            <div class="bg-[#2a2a4a] rounded-xl p-8 text-center transition-transform hover:scale-105 shadow-md">
+                <div class="text-4xl text-[#6e44ff] mb-4"><i class="fas fa-cogs"></i></div>
+                <h3 class="text-xl font-semibold mb-2">Setup Project</h3>
+                <p class="text-sm text-[#b8b8d2] mb-4">Are you a project owner? Setup NFT verification for your community</p>
+                <a href="/admin.html" class="inline-block bg-[#6e44ff] text-white py-2 px-6 rounded-lg font-bold hover:bg-[#5a36d4] transition-colors">Go to Admin Dashboard</a>
+            </div>
+        </div>
+
+        <div class="my-8">
+            <h2 class="text-2xl font-bold mb-2">Your Monad NFTs</h2>
+            <p class="text-[#b8b8d2] mb-4">Connect your wallet to view your NFT collection</p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6" id="nftGrid"></div>
+        </div>
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
+    <script>
+        const monadChainId = 10143;
+        const monadRpcUrl = 'https://testnet-rpc.monad.xyz/';
+        const monadChainName = 'Monad Testnet';
+
+        let user = null;
+        let walletAddress = null;
+        let projectConfig = null;
+        const messageBox = document.getElementById('message-box');
+
+        function showMessage(message, type) {
+            messageBox.textContent = message;
+            messageBox.className = `fixed bottom-5 right-5 px-6 py-4 rounded-lg text-white z-50 opacity-100 transition-opacity duration-500 message-${type}`;
+            setTimeout(() => {
+                messageBox.className = 'fixed bottom-5 right-5 px-6 py-4 rounded-lg text-white z-50 opacity-0 transition-opacity duration-500';
+            }, 3000);
+        }
+
+        async function loadUserData() {
+            try {
+                console.log("🔄 Loading user data and project config...");
+                const userResponse = await fetch('/api/auth/user', { credentials: 'include' });
+
+                if (!userResponse.ok) {
+                    console.warn("⚠️ Not authenticated → redirect /");
+                    window.location.href = '/';
+                    return;
+                }
+
+                const userData = await userResponse.json();
+                user = userData;
+                walletAddress = userData.walletAddress;
+
+                try {
+                    const configResponse = await fetch('/api/project/config');
+                    if (configResponse.ok) {
+                        projectConfig = await configResponse.json();
+                        window.projectConfig = projectConfig;
+                    } else {
+                        projectConfig = { guildId: null };
+                        window.projectConfig = projectConfig;
+                    }
+                } catch (configError) {
+                    projectConfig = { guildId: null };
+                    window.projectConfig = projectConfig;
+                }
+
+                document.getElementById('userAvatar').src = userData.avatar || 'https://cdn.discordapp.com/embed/avatars/0.png';
+                document.getElementById('userName').textContent = `${userData.username}${userData.discriminator !== '0' ? `#${userData.discriminator}` : ''}`;
+                document.getElementById('userStatus').textContent = 'Status: Connected with Discord';
+
+                updateHeaderUI(walletAddress);
+                await checkWalletAndLoadNFTs(walletAddress);
+
+            } catch (error) {
+                console.error("❌ loadUserData error:", error);
+                window.location.href = '/';
+            }
+        }
+
+        function updateHeaderUI(walletAddress) {
+            const headerActions = document.getElementById('headerActions');
+            const walletStatusSection = document.getElementById('walletStatusSection');
+            const connectWalletDashboardBtn = document.getElementById('connectWalletDashboardBtn');
+
+            if (walletAddress) {
+                const shortenedAddress = walletAddress.slice(0, 6) + '...' + walletAddress.slice(-4);
+                headerActions.innerHTML = `
+                    <button class="bg-transparent text-[#6e44ff] border-2 border-[#6e44ff] py-2 px-4 rounded-lg font-bold hover:bg-[#6e44ff] hover:text-white transition-colors" id="disconnectWalletHeaderBtn"><i class="fas fa-unlink"></i> Disconnect</button>
+                    <button class="bg-[#6e44ff] text-white py-2 px-4 rounded-lg font-bold hover:bg-[#5a36d4] transition-colors" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                `;
+                walletStatusSection.innerHTML = `<p class="text-[#00cc88] font-semibold">Connected Wallet: ${shortenedAddress}</p>`;
+                connectWalletDashboardBtn?.classList.add('hidden');
+            } else {
+                headerActions.innerHTML = `
+                    <button class="bg-[#6e44ff] text-white py-2 px-4 rounded-lg font-bold hover:bg-[#5a36d4] transition-colors" id="connectWalletHeaderBtn"><i class="fas fa-wallet"></i> Connect Wallet</button>
+                    <button class="bg-transparent text-[#6e44ff] border-2 border-[#6e44ff] py-2 px-4 rounded-lg font-bold hover:bg-[#6e44ff] hover:text-white transition-colors" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                `;
+                walletStatusSection.innerHTML = `<p class="text-[#ffbb00] font-semibold">Wallet Status: Not Connected</p>`;
+                connectWalletDashboardBtn?.classList.remove('hidden');
+            }
+            bindEvents();
+        }
+
+        async function connectWallet() {
+            if (typeof window.ethereum === 'undefined') {
+                showMessage('Please install a Web3 wallet like MetaMask!', 'error');
+                return;
+            }
+
+            try {
+                const provider = new ethers.BrowserProvider(window.ethereum);
+                const network = await provider.getNetwork();
+                const signer = await provider.getSigner();
+                let accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                
+                if (network.chainId !== BigInt(monadChainId)) {
+                    try {
+                        await window.ethereum.request({
+                            method: 'wallet_switchEthereumChain',
+                            params: [{ chainId: `0x${monadChainId.toString(16)}` }]
+                        });
+                        accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                    } catch (switchError) {
+                        if (switchError.code === 4902) {
+                            try {
+                                await window.ethereum.request({
+                                    method: 'wallet_addEthereumChain',
+                                    params: [{
+                                        chainId: `0x${monadChainId.toString(16)}`,
+                                        chainName: monadChainName,
+                                        rpcUrls: [monadRpcUrl],
+                                        nativeCurrency: { name: 'MON', symbol: 'MON', decimals: 18 },
+                                        blockExplorerUrls: ['https://testnet.monadexplorer.com/']
+                                    }]
+                                });
+                                accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                            } catch (addError) {
+                                console.error("❌ Failed to add Monad network:", addError);
+                                showMessage("Failed to add Monad network. Please add it manually.", 'error');
+                                return;
+                            }
+                        } else {
+                             console.error("❌ Wallet connection failed:", switchError);
+                             showMessage("Wallet connection failed.", 'error');
+                             return;
+                        }
+                    }
+                }
+                const address = accounts[0];
+                const message = `MonadVerify Wallet Connection: ${Date.now()}`;
+                const signature = await signer.signMessage(message);
+
+                const response = await fetch('/api/wallet/connect', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ address, signature, message })
+                });
+
+                if (response.ok) {
+                    showMessage("Wallet connected successfully!", "success");
+                    await loadUserData();
+                } else {
+                    const errorData = await response.json();
+                    console.error("❌ Backend wallet connect failed:", errorData.error);
+                    showMessage(errorData.error || "Failed to connect wallet.", "error");
+                }
+            } catch (error) {
+                console.error("❌ connectWallet error:", error);
+                if (error.code === 4001) {
+                    showMessage("You've rejected the wallet connection request.", "error");
+                } else {
+                    showMessage("Wallet connection failed.", "error");
+                }
+            }
+        }
+
+        async function disconnectWallet() {
+            try {
+                const response = await fetch('/api/wallet/disconnect', { method: 'POST' });
+                if (response.ok) {
+                    showMessage("Wallet disconnected successfully!", "success");
+                    await loadUserData();
+                } else {
+                    const errorText = await response.text();
+                    console.error("❌ disconnectWallet failed:", errorText);
+                    showMessage("Failed to disconnect wallet.", "error");
+                }
+            } catch (error) {
+                console.error("❌ disconnectWallet error:", error);
+                showMessage("An error occurred during disconnect.", "error");
+            }
+        }
+
+        async function logout() {
+            try {
+                const response = await fetch('/api/auth/logout', { method: 'POST' });
+                if (response.ok) {
+                    window.location.href = '/';
+                } else {
+                    const errorText = await response.text();
+                    console.error("❌ logout failed:", errorText);
+                    showMessage("Failed to log out.", "error");
+                }
+            } catch (error) {
+                console.error("❌ logout error:", error);
+                showMessage("An error occurred during logout.", "error");
+            }
+        }
+
+        async function checkWalletAndLoadNFTs(walletAddress) {
+            const nftGrid = document.getElementById('nftGrid');
+            nftGrid.innerHTML = '';
+            if (walletAddress) {
+                try {
+                    const nftsResponse = await fetch('/api/nft/nfts');
+                    if (nftsResponse.ok) {
+                        const nfts = await nftsResponse.json();
+                        displayNFTs(nfts);
+                    } else {
+                        displayPlaceholderCard('No NFTs Found', "Your wallet doesn't contain any NFTs.");
+                    }
+                } catch (error) {
+                    console.error('Failed to load NFTs:', error);
+                    displayPlaceholderCard('Failed to Load NFTs', "An error occurred while loading your NFTs.");
+                }
+            } else {
+                showConnectWalletState();
+            }
+        }
+
+        function displayNFTs(nfts) {
+            const nftGrid = document.getElementById('nftGrid');
+            nftGrid.innerHTML = '';
+            if (nfts.length === 0) {
+                displayPlaceholderCard('No NFTs Found', "Your wallet doesn't contain any NFTs.");
+                return;
+            }
+            nfts.forEach(nft => {
+                const nftCard = document.createElement('div');
+                nftCard.className = 'bg-[#2a2a4a] rounded-xl overflow-hidden transition-transform duration-300 hover:scale-[1.02] shadow-md';
+
+                let imageUrl = nft.image;
+                if (imageUrl && imageUrl.startsWith('ipfs://')) {
+                    imageUrl = imageUrl.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/');
+                }
+
+                const tier = nft.attributes?.find(attr => attr.trait_type === 'Tier')?.value.toLowerCase() || 'default';
+                const tierClass = {
+                    'diamond': 'bg-green-500/20 text-green-400',
+                    'gold': 'bg-yellow-500/20 text-yellow-400',
+                    'silver': 'bg-gray-400/20 text-gray-400'
+                }[tier] || 'bg-gray-500/20 text-gray-500';
+
+                nftCard.innerHTML = `
+                    <img src="${imageUrl}" alt="${nft.name}" class="w-full h-48 object-cover">
+                    <div class="p-4">
+                        <div class="font-bold text-lg mb-1 truncate">${nft.name}</div>
+                        <div class="text-[#6e44ff] text-sm mb-2">${nft.collection}</div>
+                        <span class="inline-block px-3 py-1 rounded-full text-xs font-semibold ${tierClass}">${tier.charAt(0).toUpperCase() + tier.slice(1)} Holder</span>
+                    </div>`;
+                nftGrid.appendChild(nftCard);
+            });
+        }
+
+        function showConnectWalletState() {
+            const nftGrid = document.getElementById('nftGrid');
+            nftGrid.innerHTML = '';
+            displayPlaceholderCard('Connect Your Wallet', 'To view your NFT collection', true);
+        }
+
+        function displayPlaceholderCard(name, collection, isConnectButton = false) {
+            const nftGrid = document.getElementById('nftGrid');
+            const cardHtml = `
+                <div class="bg-[#2a2a4a] rounded-xl p-6 md:p-8 text-center shadow-md">
+                    <img src="https://placehold.co/200x200/2a2a4a/f0f0ff?text=MonadNFT" alt="${name}" class="w-24 h-24 rounded-full mx-auto mb-4 object-cover border-2 border-[#6e44ff]">
+                    <div class="font-bold text-lg">${name}</div>
+                    <div class="text-[#b8b8d2] text-sm">${collection}</div>
+                    ${isConnectButton ? '<button id="connectWalletNftBtn" class="bg-[#6e44ff] text-white py-2 px-6 rounded-lg font-bold hover:bg-[#5a36d4] transition-colors mt-4">Connect Wallet</button>' : ''}
+                </div>`;
+            nftGrid.innerHTML = cardHtml;
+            if (isConnectButton) {
+                document.getElementById('connectWalletNftBtn')?.addEventListener('click', connectWallet);
+            }
+        }
+
+        function bindEvents() {
+            document.getElementById('connectWalletDashboardBtn')?.addEventListener('click', connectWallet);
+            document.getElementById('connectWalletHeaderBtn')?.addEventListener('click', connectWallet);
+            document.getElementById('disconnectWalletHeaderBtn')?.addEventListener('click', disconnectWallet);
+            document.getElementById('logoutBtn')?.addEventListener('click', logout);
+            document.getElementById('checkRolesBtn')?.addEventListener('click', checkRoles);
+        }
+
+        async function checkRoles() {
+            if (!user || !walletAddress) {
+                showMessage("Please connect your wallet first.", "error");
+                return;
+            }
+
+            const config = window.projectConfig || projectConfig;
+            
+            if (!config || !config.guildId) {
+                showMessage("Project configuration is not available. Please contact the project admin.", "error");
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/admin/verify-and-assign', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        guildId: config.guildId,
+                        walletAddress: walletAddress,
+                        discordUserId: user.id
+                    })
+                });
+
+                const result = await response.json();
+                if (response.ok) {
+                    showMessage(result.message, 'success');
+                } else {
+                    showMessage(result.error || 'Verification failed.', 'error');
+                }
+            } catch (error) {
+                console.error("🔥 Error during role check:", error);
+                showMessage("An error occurred during verification.", 'error');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadUserData();
+        });
+
+        const styleSheet = document.createElement("style");
+        styleSheet.innerText = `
+            .message-success { background-color: #4CAF50; }
+            .message-error { background-color: #f44336; }
+            .message-info { background-color: #2196F3; }
+        `;
+        document.head.appendChild(styleSheet);
+    </script>
+</body>
+</html>
+
+
+
+
+
+
