@@ -10,7 +10,7 @@ module.exports = {
   // Monad Blockchain Configuration
   monad: {
     rpcUrl: process.env.MONAD_RPC_URL || "https://testnet.monad.xyz",
-    chainId: parseInt(process.env.MONAD_CHAIN_ID) || 1234
+    chainId: parseInt(process.env.MONAD_CHAIN_ID) || 10143
   },
 
   // Session Configuration
@@ -18,4 +18,5 @@ module.exports = {
     secret: process.env.SESSION_SECRET || "monad-nft-verify-secret",
     maxAge: 24 * 60 * 60 * 1000 // 24 hours
   }
+
 };
